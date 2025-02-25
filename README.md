@@ -50,10 +50,20 @@ npm install
 ```bash
 docker-compose up --build
 ```
+### Alternativ: ### 
+- Benötigt [PHP](https://www.php.net/downloads.php) >= 8.4
+  - Installieren und php.ini im Installations-Ordner ersetzen mit Projekt php.ini
+
+Dann Built-in Webserver starten:
+
+```bash
+cd .\public\
+php -S localhost:8080
+```
 
 ### 4. Anwendung aufrufen
 **URL:** [http://localhost:8080](http://localhost:8080)
-Oder einen anderen Port in docker-compose.yml festlegen
+
 
 ### CSS Änderungen 
 Für Änderungen von TailwindCSS 
