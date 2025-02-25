@@ -4,7 +4,6 @@ use controllers\SiteController;
 use controllers\ApiController;
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../config/config.php';
 
 $router = new AltoRouter();
 try {

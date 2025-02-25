@@ -5,7 +5,6 @@
       "controllers\\": "src/controllers"
     },
     "files": [
-      "config/config.php"
     ]
   },
 
