@@ -22,6 +22,7 @@ in voller Größe anzeigt
 **Technologien**
 - Frontend: HTML, TailwindCSS, JavaScript
 - Backend: PHP, AltoRouter
+- [HyperUI](https://www.hyperui.dev/)
 
 
 ---
