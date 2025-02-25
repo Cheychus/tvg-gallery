@@ -75,8 +75,9 @@
                 </div>
 
 
-                <img id="overlayImage"
-                     class="max-w-[100%] max-h-[100%] w-auto h-auto object-contain opacity-0 transition-[opacity] duration-300 ease-in-out">
+                <img id="overlayImage" src=""
+                     class="max-w-[100%] max-h-[100%] w-auto h-auto object-contain opacity-0 transition-[opacity] duration-300 ease-in-out"
+                    alt="Overlay Image">
 
                 <div class="transition-none z-50">
                 <svg id="arrow-right"

@@ -133,17 +133,22 @@ export class Gallery {
         this.galleryManager.setCounter(0);
 
         images.forEach((imageId) => {
-            this.deleteImage(imageId)
-                .then(data => {
-                    if (data) {
-                        console.log('Bild erfolgreich gelöscht:', data);
-                        const img = this.galleryImageMap.get(Number(imageId));
-                        this.removeImageFromGallery(img);
-                        this.selectedImages.delete(imageId);
-                    } else {
-                        console.log('Das Bild konnte nicht gelöscht werden.');
-                    }
-                });
+            try {
+                this.deleteImage(imageId)
+                    .then(data => {
+                        if (data) {
+                            console.log('Bild erfolgreich gelöscht:', data);
+                            const img = this.galleryImageMap.get(Number(imageId));
+                            this.removeImageFromGallery(img);
+                            this.selectedImages.delete(imageId);
+                        } else {
+                            console.log('Das Bild konnte nicht gelöscht werden.');
+                        }
+                    });
+            } catch (error) {
+                console.error(error);
+            }
+
         });
     }
 
@@ -153,25 +158,20 @@ export class Gallery {
      * @returns {Promise<any|null>}
      */
     async deleteImage(imageId) {
-        try {
-            const response = await fetch(`/api/image/${imageId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+        const response = await fetch(`/api/image/${imageId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-            if (!response.ok) {
-                throw new Error(`Fehler beim Löschen: ${response.status} ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            console.log('Bild gelöscht:', data);
-            return data;
-        } catch (error) {
-            console.error('Löschvorgang fehlgeschlagen:', error.message);
-            return null;
+        if (!response.ok) {
+            throw new Error(`Fehler beim Löschen: ${response.status} ${response.statusText}`);
         }
+
+        const data = await response.json();
+        console.log('Bild gelöscht:', data);
+        return data;
     }
 
     /**
