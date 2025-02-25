@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "build:production": "npx postcss ./public/assets/css/tailwind-input.css -o ./public/assets/css/tailwind-output.css --minify",
     "build:postcss": "npx postcss ./public/assets/css/tailwind-input.css -o ./public/assets/css/tailwind-output.css",
     "watch": "postcss ./public/assets/css/tailwind-input.css -o ./public/assets/css/tailwind-output.css --watch"
   },
