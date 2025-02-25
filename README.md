@@ -1,7 +1,90 @@
-# tvg-gallery
-Eine Bildergalerie die als Testaufgabe für die TVG entwickelt wurde
+# TVG Image-Gallery
 
-1. Clone Project from github
-2. Composer abhängigkeiten installieren mit composer install
-3. node modules installieren mit npm install
-4. Docker container starten mit docker-compose up --build
+Eine Bilder-Galerie die als Testaufgabe für die TVG programmiert wurde
+und an https://github.com/gtvherrmann/testaufgaben angelehnt ist. 
+
+**Funktionen**
+- Der Nutzer kann eine Gallery mit zwei Ordnern laden und 
+über einen Header zwischen diesen hin und her schalten
+- In jeden Ordner können über einen Upload Button im Footer Bilder 
+hinzugefügt werden
+- Über einen Button im Header können Bilder ausgewählt und gelöscht werden
+- Die Bilder werden in einer endlos scrollenden Liste geladen 
+  - Dabei werden über ein lazy-loading event nur die Bilder geladen, 
+  welche zurzeit im Viewport sind
+- Mit einem Klick auf ein Bild wird ein Overlay geladen, welches das Bild 
+in voller Größe anzeigt
+  - Über eine Button-Navigation oder über die Pfeiltasten kann das nächste 
+  bzw. vorherige Bild im Overlay geladen werden
+  - Bis das Bild vollständig geladen ist, wird eine Lade-Animation gezeigt
+  - Bei einem weiteren Klick oder ESC wird das Overlay geschlossen
+
+**Technologien**
+- Frontend: HTML, TailwindCSS, JavaScript
+- Backend: PHP, AltoRouter
+
+
+---
+
+## Installation & Setup
+
+### 1. Repository klonen
+```bash
+git clone https://github.com/username/repository.git
+cd repository
+```
+
+### 2. Abhängigkeiten installieren
+
+**Backend (PHP & Composer):**
+```bash
+composer install
+```
+
+**Frontend (Node.js & npm):**
+```bash
+npm install
+```
+
+### 3. Docker-Container starten
+```bash
+docker-compose up --build
+```
+
+### 4. Anwendung aufrufen
+**URL:** [http://localhost:8080](http://localhost:8080)
+Oder einen anderen Port in docker-compose.yml festlegen
+
+### CSS Änderungen 
+Für Änderungen von TailwindCSS 
+```bash
+npm run watch
+```
+oder für minified CSS version
+```bash
+npm run build:production
+```
+
+
+---
+
+## Projektstruktur
+```
+/database     # SQLite Datenbank
+/public       # Frontend Dateien & Image-Uploads
+/src          # Router Controller, PHP Classes & Views
+```
+
+---
+
+## Dokumentation
+- [Docker](https://docs.docker.com/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [AltoRouter](https://github.com/dannyvankooten/AltoRouter/tree/master)
+
+## API Spezifikation
+- **GET /api/images/{id}**: Liste aller Bilder eines Ordners
+- **POST /api/image/{id}**: Lädt ein Bild in einen Ordner (benötigt ein Image in $_FILE) 
+- **DELETE /api/image/{id}**: Löscht ein bestimmtes Bild
+
+
