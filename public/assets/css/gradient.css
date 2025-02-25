@@ -1,0 +1,4 @@
+.diamond-gradient {
+    background: radial-gradient(118.84% 54.83% at 50% 45.17%, #9E39C6 19.4%, #3AA7C6 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+}
+

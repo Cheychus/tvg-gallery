@@ -1,0 +1,19 @@
+{
+  "autoload": {
+    "psr-4": {
+      "models\\": "src/models",
+      "controllers\\": "src/controllers"
+    },
+    "files": [
+      "config/config.php"
+    ]
+  },
+
+
+  "require": {
+    "altorouter/altorouter": "1.1.0",
+    "ext-gd": "*",
+    "ext-pdo": "*",
+    "ext-fileinfo": "*"
+  }
+}
