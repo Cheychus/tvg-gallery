@@ -26,6 +26,4 @@ EXPOSE 80
 RUN a2enmod rewrite
 CMD ["apache2-foreground"]
 
-CMD ["Server gestartet: http://localhost:8080"]
-
 
