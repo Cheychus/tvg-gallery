@@ -15,7 +15,7 @@ export default class GalleryImage {
         this.name = imageData.name;
         this.pathThumb = imageData.pathThumb;
         this.pathPreview = imageData.pathPreview;
-        this.pathOriginal = imageData.pathOriginal;
+        this.pathLow = imageData.pathLow;
         this.width = imageData.width;
         this.height = imageData.height;
         this.ratio = imageData.ratio;
@@ -28,11 +28,12 @@ export default class GalleryImage {
      * This will create a placeholder that can be used when a gallery is initialised to give user feedback on loading images
      * @returns {HTMLDivElement} - add this to a gallery container
      */
-     static createPlaceholder(){
+    static createPlaceholder() {
         const placeholderDiv = document.createElement("div");
-        placeholderDiv.className = "w-full aspect-square rounded-md bg-tvg-gray flex justify-center items-center opacity-50";
-        placeholderDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-             class="animate-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`;
+        placeholderDiv.className = "w-full aspect-square rounded-md bg-tvg-gray flex justify-center items-center animate-pulse";
+        placeholderDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+</svg>`;
         return placeholderDiv;
     }
 
@@ -52,8 +53,9 @@ export default class GalleryImage {
         this.placeholder = GalleryImage.createPlaceholder();
         const image = new Image();
         image.setAttribute("data-src", this.pathPreview);
+        image.setAttribute("data-src-low", this.pathLow);
         image.loading = "eager";
-        image.className = "thumbnail w-full aspect-square rounded-md object-cover cursor-pointer";
+        image.className = "bg-tvg-gray/60 thumbnail w-full aspect-square rounded-md object-cover cursor-pointer";
         image.alt = "Bild";
         image.dataset.id = this.id;
         image.addEventListener("load", () => {
@@ -78,21 +80,22 @@ export default class GalleryImage {
         // checkbox for selection
         this.checkBox = document.createElement("input");
         this.checkBox.type = "checkbox";
-        this.checkBox.className = "hidden absolute top-2 left-2 w-5 h-5 rounded-full bg-gray-300 border-gray-300 cursor-pointer";
+        this.checkBox.className = "hidden absolute top-2 left-2 w-5 h-5 bg-gray-300 border-gray-300";
         this.imageContainer.appendChild(this.checkBox);
 
 
         this.imageContainer.appendChild(this.placeholder);
     }
 
+
     /**
      * Add or remove the image container checkbox
      * @param on
      */
-    toggleCheckbox(on){
-        if(on){
+    toggleCheckbox(on) {
+        if (on) {
             this.checkBox.classList.remove('hidden');
-        }else {
+        } else {
             this.checkBox.classList.add('hidden');
         }
     }
@@ -102,10 +105,10 @@ export default class GalleryImage {
      * This is useful when deleting images, so that the user gets immediate feedback on deleted files, before the request is done
      * @param on
      */
-    hide(on){
-        if(on){
+    hide(on) {
+        if (on) {
             this.imageContainer.classList.add('hidden');
-        }else{
+        } else {
             this.imageContainer.classList.remove('hidden');
         }
 
@@ -115,7 +118,7 @@ export default class GalleryImage {
      * Just a getter for the image id
      * @returns {number}
      */
-    getId(){
+    getId() {
         return Number(this.id);
     }
 

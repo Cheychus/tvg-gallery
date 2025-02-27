@@ -8,6 +8,12 @@ und an https://github.com/gtvherrmann/testaufgaben angelehnt ist.
 über einen Header zwischen diesen hin und her schalten
 - In jeden Ordner können über einen Upload Button im Footer Bilder 
 hinzugefügt werden
+  - Unterstützt werden: JPG, PNG, WEBP, BMP
+  - GIF und SVG werden bis 1 MB Größe unterstützt
+    - Größere GIFs werden in WEBP umgewandelt
+    - Größere SVGs werden abgelehnt, da GDImage keine Konvertierung ermöglicht
+  - Aus Performance Gründen werden Overlay-Bilder > 1 MB in WEBP umgewandelt und 
+  Bilder mit einer Auflösung > 1920px werden skaliert
 - Über einen Button im Header können Bilder ausgewählt und gelöscht werden
 - Die Bilder werden in einer endlos scrollenden Liste geladen 
   - Dabei werden über ein lazy-loading event nur die Bilder geladen, 
@@ -22,6 +28,7 @@ in voller Größe anzeigt
 **Technologien**
 - Frontend: HTML, TailwindCSS, JavaScript
 - Backend: PHP, AltoRouter
+- Bilderbearbeitung: GDImage
 
 
 ---
@@ -30,8 +37,7 @@ in voller Größe anzeigt
 
 ### 1. Repository klonen
 ```bash
-git clone https://github.com/username/repository.git
-cd repository
+git clone https://github.com/Cheychus/tvg-gallery.git
 ```
 
 ### 2. Abhängigkeiten installieren
@@ -95,6 +101,6 @@ npm run build:production
 ## API Spezifikation
 - **GET /api/images/{id}**: Liste aller Bilder eines Ordners
 - **POST /api/image/{id}**: Lädt ein Bild in einen Ordner (benötigt ein Image in $_FILE) 
-- **DELETE /api/image/{id}**: Löscht ein bestimmtes Bild
+- **DELETE /api/images**: Löscht alle ausgewählten Bilder
 
 

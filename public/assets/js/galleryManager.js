@@ -3,6 +3,7 @@ import GalleryImage from "./galleryImage.js";
 
 export class GalleryManager {
     counter = document.getElementById("select-count");
+    selectAll = document.getElementById("select-all");
     toggleButton = document.getElementById('toggle-select');
     overlay = document.getElementById("imageOverlay");
     overlayImage = document.getElementById("overlayImage");
@@ -24,6 +25,7 @@ export class GalleryManager {
         this.activeGallery = null;
         this.setupTabChangeEvent();
         this.setupUploadButton();
+        this.setupSelectAllButton();
         this.setupToggleSelectionEvent();
         this.setupOverlayEvent();
     }
@@ -87,15 +89,24 @@ export class GalleryManager {
 
     /**
      * Enable or disable all checkboxes in all galleries
+     * @param gallery
      * @param on
      */
-    checkAllCheckboxes(on) {
-        this.galleries.forEach(gallery => {
+    checkAllCheckboxes(gallery, on) {
+        if (on) {
+            gallery.galleryImageMap.forEach(galleryImage => {
+                if (!galleryImage.checkBox.checked) {
+                    galleryImage.checkBox.checked = true;
+                    gallery.selectedImages.add(galleryImage.id);
+                }
+            })
+        } else {
             gallery.selectedImages.clear();
             gallery.galleryImageMap.forEach(galleryImage => {
-                galleryImage.checkBox.checked = on;
+                galleryImage.checkBox.checked = false;
             });
-        });
+        }
+        this.updateCounter();
     }
 
     /**
@@ -105,7 +116,15 @@ export class GalleryManager {
     deactivateSelectionMode() {
         this.counter.classList.remove("text-white");
         this.counter.classList.add("text-tvg-blue-800");
-        this.checkAllCheckboxes(false);
+        this.selectAll.classList.remove("text-white");
+        this.selectAll.classList.remove("hover:text-tvg-blue-100");
+        this.selectAll.classList.add("text-tvg-blue-800");
+        this.selectAll.classList.remove("cursor-pointer");
+        this.selectAll.disabled = true;
+        this.galleries.forEach(gallery => {
+            this.checkAllCheckboxes(gallery, false);
+        })
+
 
         this.updateCounter();
     }
@@ -116,8 +135,12 @@ export class GalleryManager {
     activateSelectionMode() {
         this.counter.classList.remove("text-tvg-blue-800");
         this.counter.classList.add("text-white");
+        this.selectAll.disabled = false;
+        this.selectAll.classList.remove("text-tvg-blue-800");
+        this.selectAll.classList.add("text-white");
+        this.selectAll.classList.add("cursor-pointer");
+        this.selectAll.classList.add("hover:text-tvg-blue-100");
     }
-
 
 
     /**
@@ -143,7 +166,6 @@ export class GalleryManager {
         const index = keys.indexOf(key);
         if (index === -1) return null;
         const previousKey = keys[(index - 1 + keys.length) % keys.length];
-        console.log('prev Key: ', previousKey);
         const prevGalleryImage = this.activeGalleryImageMap.get(previousKey);
         this.loadSelectedImageInOverlay(prevGalleryImage.getId());
     }
@@ -158,14 +180,9 @@ export class GalleryManager {
         const index = keys.indexOf(key);
         if (index === -1) return null;
         const nextKey = keys[(index + 1) % keys.length];
-        const nextNextKey = keys[(index + 2) % keys.length];
-        console.log('next Key: ', nextKey);
-        console.log('next Next Key: ', nextNextKey);
         const nextGalleryImage = this.activeGalleryImageMap.get(nextKey);
-        // const nextNextGalleryImage = this.activeGalleryImageMap.get(nextNextKey);
         this.loadSelectedImageInOverlay(nextGalleryImage.getId());
     }
-
 
 
     /**
@@ -173,21 +190,49 @@ export class GalleryManager {
      * @param imageId - corresponding to image map key
      */
     loadSelectedImageInOverlay(imageId) {
+        this.overlayImageId = Number(imageId);
         const galleryImage = this.activeGalleryImageMap.get(Number(imageId));
         this.showLoadingSpinner(true);
         this.overlayImage.classList.remove('opacity-100');
         this.overlayImage.classList.add('opacity-0');
-        this.overlayImage.src = galleryImage.pathPreview;
 
-        this.overlayImage.onload = () => {
+        const preloadImg = new Image();
+        preloadImg.src = galleryImage.pathPreview;
+
+        if (preloadImg.complete) {
+            this.overlayImage.src = preloadImg.src;
             this.showLoadingSpinner(false);
             this.overlayImage.classList.remove('opacity-0');
             this.overlayImage.classList.add('opacity-100');
             this.leftArrow.classList.remove('hidden');
             this.rightArrow.classList.remove('hidden');
+        } else {
+            // Low Quality image first
+            this.overlayImage.src = galleryImage.pathLow;
+            this.overlayImage.onload = () => {
+                if (this.overlayImageId !== Number(imageId)) {
+                    return;
+                }
+                this.showLoadingSpinner(false);
+                this.overlayImage.classList.remove('opacity-0');
+                this.overlayImage.classList.add('opacity-100');
+                this.leftArrow.classList.remove('hidden');
+                this.rightArrow.classList.remove('hidden');
+            }
+
+            preloadImg.onload = () => {
+                if (this.overlayImageId !== Number(imageId)) {
+                    return;
+                }
+                this.overlayImage.src = preloadImg.src;
+                this.leftArrow.classList.remove('hidden');
+                this.rightArrow.classList.remove('hidden');
+            }
         }
-        this.overlayImageId = Number(imageId);
+
+
     }
+
 
     /**
      * Refresh counter value with current selected images array size
@@ -321,7 +366,6 @@ export class GalleryManager {
     }
 
 
-
     /**
      * Setup Upload-Button for managing multiple file uploads
      */
@@ -332,26 +376,47 @@ export class GalleryManager {
 
         document.getElementById('fileInput').addEventListener('change', async (event) => {
             const files = event.target.files;
+            const cleanFiles = [];
             const placeholders = [];
             const currentGallery = this.activeGallery;
             if (files.length > 0) {
                 for (const file of files) {
+                    if (!currentGallery.isSupportedFileType(file)) {
+                        console.log(file.type + " is not supported");
+                        continue;
+                    }
+                    cleanFiles.push(file);
                     const placeholder = GalleryImage.createPlaceholder();
                     placeholders.push(placeholder);
                     currentGallery.galleryContainer.appendChild(placeholder);
                 }
 
-                for (let i = 0; i < files.length; i++) {
-                    const imageData = await currentGallery.addImage(files[i]);
+                for (let i = 0; i < cleanFiles.length; i++) {
+                    const imageData = await currentGallery.addImage(cleanFiles[i]);
+                    if (!imageData) {
+                        placeholders.at(i).remove();
+                        continue;
+                    }
                     const galleryImage = new GalleryImage(imageData);
                     galleryImage.toggleCheckbox(this.isSelectionMode);
 
                     const imageDiv = currentGallery.addImageToGallery(galleryImage);
                     placeholders.at(i).replaceWith(imageDiv);
                 }
+
             }
+            event.target.value = '';
         });
+
     }
 
 
+    /**
+     * Simply selecting all images in the gallery
+     */
+    setupSelectAllButton() {
+        this.selectAll.addEventListener("click", () => {
+            this.checkAllCheckboxes(this.activeGallery, true);
+        })
+    }
 }

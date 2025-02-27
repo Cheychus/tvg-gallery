@@ -110,69 +110,67 @@ export class Gallery {
      * @returns {Promise<any>}
      */
     async addImage(file) {
+        if (!this.isSupportedFileType(file)) {
+            alert('Nur JPG, PNG, GIF, AVIF, WEBP sind unterstützt');
+            return false;
+        }
+
         const formData = new FormData();
         formData.append('file', file);
         const response = await fetch(`/api/image/${this.folderNr}`, {
             method: 'POST',
             body: formData,
         });
-        return await response.json();
+        if (response.ok) {
+            return await response.json();
+        } else {
+            console.error('Error adding image: ', await response.text());
+        }
     }
 
     /**
-     * This will delete all selected images
+     * Check if file type is supported otherwise return false
+     * @param file - upload file
+     * @returns {boolean}
+     */
+    isSupportedFileType(file) {
+        const supportedTypes = ['image/jpeg', 'image/png', 'image/gif',
+            'image/webp', 'image/avif', 'image/webp', 'image/svg+xml', 'image/bmp'];
+        return supportedTypes.includes(file.type);
+    }
+
+    /**
+     * This will delete all selected images with one request
      * @returns {Promise<void>}
      */
-    async deleteImages() {
-        console.log(this.selectedImages)
+    async deleteImages(){
+        console.log(this.selectedImages);
         const images = this.selectedImages;
+        const selectedGalleryImages = [];
         images.forEach((imageId) => {
             const galleryImage = this.galleryImageMap.get(Number(imageId));
             galleryImage.hide(true);
+            selectedGalleryImages.push(galleryImage);
         });
         this.galleryManager.setCounter(0);
 
-        images.forEach((imageId) => {
-            try {
-                this.deleteImage(imageId)
-                    .then(data => {
-                        if (data) {
-                            console.log('Bild erfolgreich gelöscht:', data);
-                            const img = this.galleryImageMap.get(Number(imageId));
-                            this.removeImageFromGallery(img);
-                            this.selectedImages.delete(imageId);
-                        } else {
-                            console.log('Das Bild konnte nicht gelöscht werden.');
-                        }
-                    });
-            } catch (error) {
-                console.error(error);
-            }
-
-        });
-    }
-
-    /**
-     * Delete an image in the database and remove files from folder
-     * @param imageId
-     * @returns {Promise<any|null>}
-     */
-    async deleteImage(imageId) {
-        const response = await fetch(`/api/image/${imageId}`, {
+        const jsonData = JSON.stringify({ imageIds: Array.from(images) });
+        fetch(`/api/images`, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error(`Fehler beim Löschen: ${response.status} ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log('Bild gelöscht:', data);
-        return data;
+            headers: {'Content-Type': 'application/json'},
+            body: jsonData,
+        })
+        .then(res => res.json())
+        .then(data => {
+            selectedGalleryImages.forEach(image => {
+                this.removeImageFromGallery(image);
+                this.selectedImages.delete(image.id);
+            });
+            console.log('Bilder entfernt', data);
+        })
+        .catch(err => console.log("Error: ", err));
     }
+
 
     /**
      * Remove an image container from the gallery

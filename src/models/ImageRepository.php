@@ -51,7 +51,7 @@ class ImageRepository
                     width,
                     height,
                     ratio,
-                    pathOriginal,
+                    pathLow,
                     pathThumb,
                     pathPreview
                     ) VALUES (?,?,?,?,?,?,?,?,?,?)");
@@ -63,7 +63,7 @@ class ImageRepository
                 $image->width,
                 $image->height,
                 $image->ratio,
-                $image->pathOriginal,
+                $image->pathLow,
                 $image->pathThumb,
                 $image->pathPreview
             ]

@@ -1,7 +1,7 @@
 <?php
+
 namespace controllers;
 
-use JetBrains\PhpStorm\NoReturn;
 
 class SiteController
 {
@@ -11,7 +11,7 @@ class SiteController
      * Home Page
      * @return void
      */
-    #[NoReturn] public function home(): void
+    public function home(): void
     {
         require self::VIEW_PATH . 'home.html';
         exit();
@@ -21,12 +21,11 @@ class SiteController
      * Gallery Page
      * @return void
      */
-    #[NoReturn] public function gallery(): void
+    public function gallery(): void
     {
         require self::VIEW_PATH . 'gallery.php';
         exit();
     }
-
 
 
 }

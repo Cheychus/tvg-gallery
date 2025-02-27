@@ -1,5 +1,5 @@
 <?php
-
+ob_start();
 use controllers\SiteController;
 use controllers\ApiController;
 
@@ -11,7 +11,8 @@ try {
     $router->map('GET', '/gallery', [SiteController::class, 'gallery']);
     $router->map( 'GET', '/api/images/[i:id]', [ApiController::class, 'getImages'] );
     $router->map( 'POST', '/api/image/[i:id]', [ApiController::class, 'uploadImage'] );
-    $router->map('DELETE', '/api/image/[i:id]', [ApiController::class, 'deleteImage'] );
+    $router->map('DELETE', '/api/images', [ApiController::class, 'deleteImages'] );
+
 } catch (Exception $e) {
     echo $e->getMessage();
 }
@@ -28,6 +29,7 @@ if ($match) {
         http_response_code(500);
         echo "Controller oder Methode nicht gefunden.";
     }
+    exit();
 } else {
     http_response_code(404);
     require '../src/views/404.php';

@@ -18,7 +18,7 @@
                     class="tab px-1 sm:px-4 text-white text-xs sm:text-sm cursor-pointer">Galerie 1
             </button>
             <button id="tab-2" data-id=2
-                    class="tab px-1 sm:px-4 text-tvg-blue-200 text-xs sm:text-sm hover:text-tvg-blue-100 cursor-pointer">
+                    class="tab px-1 sm:px-4 text-tvg-blue-200 text-xs sm:text-sm hover:text-tvg-blue-300 cursor-pointer">
                 Galerie 2
             </button>
         </div>
@@ -33,7 +33,12 @@
                         class="absolute inset-y-0 start-0 m-1 sm:size-4 size-3 rounded-full bg-white transition-all peer-checked:start-6"
                 ></span>
             </label>
-            <p id="select-count" class="text-xs text-tvg-blue-800"> 0 ausgewählt </p>
+
+            <div class="flex flex-col gap-1">
+                <p id="select-count" class="text-xs text-tvg-blue-800"> 0 ausgewählt </p>
+                <button id="select-all" class="text-xs text-tvg-blue-800" disabled>Alle auswählen</button>
+            </div>
+
             <button id="deleteButton" class="p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                      class="size-8 text-black cursor-pointer">
@@ -54,20 +59,24 @@
         </div>
 
         <div id="imageOverlay" class="hidden fixed inset-0 flex justify-center items-center z-50">
-            <div class="relative w-auto h-full flex items-center">
-                <div id="loading-spinner">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                         class="animate-spin absolute left-1/2 -translate-y-1/2">
-                        <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+            <div class="relative w-full h-full flex items-center justify-center">
+                <div id="loading-spinner" class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2
+                 w-1/3 aspect-square bg-gray-300/50 flex justify-center items-center rounded-md
+                animate-pulse">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="size-10">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
                     </svg>
+
                 </div>
+
                 <div class="transition-none z-50">
                     <svg id="arrow-left"
                          xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                         class="ml-1 lucide arrow-left hidden
-                     text-black bg-gray-300/70 rounded-full absolute left-0 top-1/2 transform -translate-y-1/2 cursor-pointer">
+                         class="ml-1 lucide arrow-left hidden bg-tvg-blue-200/50 hover:bg-tvg-blue-300/50
+                     text-black rounded-full absolute left-0 top-1/2 transform -translate-y-1/2 cursor-pointer">
                         <circle cx="12" cy="12" r="10"/>
                         <path d="M16 12H8"/>
                         <path d="m12 8-4 4 4 4"/>
@@ -76,18 +85,18 @@
 
 
                 <img id="overlayImage" src=""
-                     class="max-w-[100%] max-h-[100%] w-auto h-auto object-contain opacity-0 transition-[opacity] duration-300 ease-in-out"
-                    alt="Overlay Image">
+                     class="bg-tvg-gray/50 rounded-sm max-w-[100%] max-h-[100%] w-auto h-auto object-contain opacity-0 transition-[opacity] duration-300 ease-in-out"
+                     alt="Overlay Image">
 
                 <div class="transition-none z-50">
-                <svg id="arrow-right"
-                     xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                     class="mr-1 lucide arrow-right hidden text-black bg-gray-300/70 rounded-full absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="M8 12h8"/>
-                    <path d="m12 16 4-4-4-4"/>
-                </svg>
+                    <svg id="arrow-right"
+                         xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="mr-1 lucide arrow-right hidden text-black bg-tvg-blue-200/50 hover:bg-tvg-blue-300/50 rounded-full absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M8 12h8"/>
+                        <path d="m12 16 4-4-4-4"/>
+                    </svg>
                 </div>
             </div>
         </div>

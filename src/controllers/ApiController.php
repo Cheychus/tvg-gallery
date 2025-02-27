@@ -2,7 +2,7 @@
 
 namespace controllers;
 
-use JetBrains\PhpStorm\NoReturn;
+use Exception;
 use models\Database;
 use models\Image;
 use models\ImageRepository;
@@ -25,7 +25,7 @@ class ApiController
      * @param $params
      * @return void
      */
-    #[NoReturn] public function getImages($params): void
+    public function getImages($params): void
     {
         $folderNr = $params['id'];
         $images = $this->imageRepository->getImages($folderNr);
@@ -44,7 +44,7 @@ class ApiController
      * @param $params
      * @return void
      */
-    #[NoReturn] public function uploadImage($params): void
+    public function uploadImage($params): void
     {
         $folderNr = $params['id'];
         $file = $_FILES['file'];
@@ -58,33 +58,48 @@ class ApiController
             'type' => $type,
             'size' => $size,
         ];
-        $image = Image::constructFromUploadData($data, $tmpName);
-        $id = $this->imageRepository->addImage($image);
-        $image->id = $id;
-        http_response_code(200);
-        echo $image->toJson();
-        exit();
+        try{
+            $image = Image::constructFromUploadData($data, $tmpName);
+            $id = $this->imageRepository->addImage($image);
+            $image->id = $id;
+            http_response_code(200);
+            echo $image->toJson();
+            exit();
+        } catch (Exception $e){
+            http_response_code(500);
+            echo "Fehler beim hochladen des Bildes: " . $e->getMessage();
+            exit();
+        }
+
     }
 
+
     /**
-     * Delete one image by its id
-     * @param $params
+     * Delete multiple images by its ids with one request
      * @return void
      */
-    #[NoReturn] public function deleteImage($params): void
+    public function deleteImages(): void
     {
-        $id = $params['id'];
-        $image = $this->imageRepository->getImageById($id);
-        $response = $image->deleteImageData();
+        $rawBody = file_get_contents('php://input');
+        $data = json_decode($rawBody, true);
 
-        if($response['success']){
-            $this->imageRepository->deleteImage($id);
-            http_response_code(200);
-        } else {
-            http_response_code(404);
+        $imageIds = $data['imageIds'] ?? [];
+        if (empty($imageIds)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'No image IDs provided']);
+            return;
         }
+        $response = [];
+        foreach ($imageIds as $imageId) {
+            $image = $this->imageRepository->getImageById($imageId);
+            $success = $image->deleteImageData();
+            if($success){
+                $this->imageRepository->deleteImage($imageId);
+                $response[] = $success;
+            }
+        }
+        http_response_code(200);
         echo json_encode($response);
-        exit();
     }
 
 }
