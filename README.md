@@ -69,7 +69,7 @@ php -S localhost:8080
 ```
 
 ### 4. Anwendung aufrufen
-**URL:** [http://localhost:8080](http://localhost:8080/home)
+**URL:** [http://localhost:8080](http://localhost:8080/)
 
 
 ### CSS Änderungen 
