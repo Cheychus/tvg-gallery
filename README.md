@@ -8,7 +8,7 @@ und an https://github.com/gtvherrmann/testaufgaben angelehnt ist.
 über einen Header zwischen diesen hin und her schalten
 - In jeden Ordner können über einen Upload Button im Footer Bilder 
 hinzugefügt werden
-  - Unterstützt werden: JPG, PNG, WEBP, BMP
+  - Unterstützt werden: JPG, PNG, WEBP, BMP, AVIF
   - GIF und SVG werden bis 1 MB Größe unterstützt
     - Größere GIFs werden in WEBP umgewandelt
     - Größere SVGs werden abgelehnt, da GDImage keine Konvertierung ermöglicht
@@ -38,6 +38,7 @@ in voller Größe anzeigt
 ### 1. Repository klonen
 ```bash
 git clone https://github.com/Cheychus/tvg-gallery.git
+cd tvg-gallery
 ```
 
 ### 2. Abhängigkeiten installieren
