@@ -327,9 +327,9 @@ export class GalleryManager {
                     checkbox.checked = !checkbox.checked;
                 }
                 if (checkbox.checked) {
-                    this.activeGallery.selectedImages.add(imageId);
+                    this.activeGallery.selectedImages.add(Number(imageId));
                 } else {
-                    this.activeGallery.selectedImages.delete(imageId);
+                    this.activeGallery.selectedImages.delete(Number(imageId));
                 }
                 this.updateCounter();
                 return;

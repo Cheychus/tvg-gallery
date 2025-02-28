@@ -164,7 +164,6 @@ export class Gallery {
         .then(data => {
             selectedGalleryImages.forEach(image => {
                 this.removeImageFromGallery(image);
-                this.selectedImages.delete(image.id);
             });
             console.log('Bilder entfernt', data);
         })
@@ -178,6 +177,13 @@ export class Gallery {
      */
     removeImageFromGallery(galleryImage) {
         galleryImage.imageContainer.remove();
+        this.galleryImageMap.delete(Number(galleryImage.id));
+        this.selectedImages.delete(Number(galleryImage.id));
+
+        console.log('delete: ', galleryImage.id);
+        console.log(this.galleryImageMap);
+        console.log(this.selectedImages);
+
     }
 
     /**
